@@ -9,7 +9,7 @@ import { theme } from './theme'
 import { ThemeProvider } from '@material-ui/core/styles'
 import { CssBaseline } from '@material-ui/core'
 
-import App from './packages/app/components/App/App.js'
+import App from './packs/app/components/App/App.js'
 
 ReactDOM.render(
     <React.StrictMode>
