@@ -1,5 +1,5 @@
-export default (theme) => ({
-    root: {
-        margin: 12
-    }
-})
+import styled from '@mui/material/styles/styled'
+
+export const DivRoot= styled('div')(() => ({
+    margin: 12
+}))

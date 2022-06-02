@@ -1,32 +1,28 @@
 import React from 'react'
+import * as Styles from './Billlist.styles'
 import { Link } from 'react-router-dom'
 
-import makeStyles from '@material-ui/core/styles/makeStyles'
-import styles from './Billlist.styles'
-
-import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import Fab from '@material-ui/core/Fab'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import TextField from '@material-ui/core/TextField'
-import AddIcon from '@material-ui/icons/Add'
-
-const useStyles= makeStyles(styles, {
-    name: Billlist.name
-})
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import TextField from '@mui/material/TextField'
+import { Add as AddIcon } from '@mui/icons-material'
 
 export default function Billlist() {
-    const classes= useStyles()
-
+    const classes= {}
     const [billName, setBillName]= React.useState('')
     const [billDialogOpen, setBillDialogOpen]= React.useState(false)
 
-    const bills= localStorage.getItem("bills") === null ? [] : JSON.parse(localStorage.getItem("bills"))
+    const bills= React.useMemo(() => {
+        return localStorage.getItem("bills") === null ? [] : JSON.parse(localStorage.getItem("bills"))
+    }, [
+
+    ])
 
     const handleAddBill= (billName) => {
         bills.push({
@@ -59,12 +55,12 @@ export default function Billlist() {
                     </ListItem>
                 ))}
             </List>
-            <Fab
+            <Styles.SFab
                 className={classes.fab}
                 onClick={() => setBillDialogOpen(true)}
             >
                 <AddIcon />
-            </Fab>
+            </Styles.SFab>
             <Dialog open={billDialogOpen}>
                 <DialogTitle>Test Dialog</DialogTitle>
                 <DialogContent>

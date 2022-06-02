@@ -1,30 +1,27 @@
 import React from 'react'
-import makeStyles from '@material-ui/core/styles/makeStyles'
-import styles from './Bill.styles'
-
+import * as Styles from './Bill.styles'
 import { useParams, Routes, Route } from 'react-router-dom'
 
-import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import Fab from '@material-ui/core/Fab'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import TextField from '@material-ui/core/TextField'
-import AddIcon from '@material-ui/icons/Add'
-
-const useStyles= makeStyles(styles, {
-    name: Bill.name
-})
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import Fab from '@mui/material/Fab'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import TextField from '@mui/material/TextField'
+import { Add as AddIcon } from '@mui/icons-material'
 
 export default function Bill() {
-    const classes= useStyles()
     const params= useParams()
     const billName= params.id
 
-    const bills= JSON.parse(localStorage.getItem("bills"))
+    const bills= React.useMemo(() => {
+        return JSON.parse(localStorage.getItem("bills"))
+    }, [
+
+    ])
     const bill= bills.filter((bill) => bill.name === billName)[0]
 
     const [guestDialogOpen, setGuestDialogOpen]= React.useState(false)
@@ -38,7 +35,7 @@ export default function Bill() {
     React.useEffect(() => {
 
     }, [
-        bill
+        bills
     ])
 
     const handleAddGuest= (guestName) => {
@@ -62,7 +59,7 @@ export default function Bill() {
     }
 
     return (
-        <div className={classes.root}>
+        <Styles.DivRoot>
             <List>
                 {!!bill.guests && bill.guests.map((guest) => (
                     <ListItem key={guest.name}>
@@ -125,6 +122,6 @@ export default function Bill() {
                     <Button onClick={() => setPositionsDialogOpen(false)}>Close</Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </Styles.DivRoot>
     )
 }
