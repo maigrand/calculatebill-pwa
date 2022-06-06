@@ -10,10 +10,10 @@ import { theme } from './theme'
 import ThemeProvider from '@mui/material/styles/ThemeProvider'
 import CssBaseline from '@mui/material/CssBaseline'
 
-import App from './packs/app/components/App/App.js'
+import App from './packs/app/components/App/App'
 
 const root= ReactDOM.createRoot(
-    document.getElementById('root')
+    document.getElementById('root') as HTMLElement
 )
 
 root.render(

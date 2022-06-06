@@ -13,18 +13,23 @@ import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
 import { Add as AddIcon } from '@mui/icons-material'
 
+export interface IBill {
+    name: string,
+    date: Date,
+    guests: []
+}
+
 export default function Billlist() {
-    const classes= {}
     const [billName, setBillName]= React.useState('')
     const [billDialogOpen, setBillDialogOpen]= React.useState(false)
 
     const bills= React.useMemo(() => {
-        return localStorage.getItem("bills") === null ? [] : JSON.parse(localStorage.getItem("bills"))
+        return localStorage.getItem("bills") === null ? [] : JSON.parse(localStorage.getItem("bills") || "")
     }, [
-
+        billName
     ])
 
-    const handleAddBill= (billName) => {
+    const handleAddBill= (billName: string) => {
         bills.push({
             name: billName,
             date: new Date(),
@@ -43,20 +48,19 @@ export default function Billlist() {
         <>
             <List>
                 {bills.length === 0 && (
-                    <ListItem className={classes.listItem}>
-                        <ListItemText className={classes.listItemText} primary="No bills"/>
+                    <ListItem>
+                        <ListItemText primary="No bills"/>
                     </ListItem>
                 )}
-                {bills.map((bill) => (
-                    <ListItem key={bill.name} className={classes.listItem}>
+                {bills.map((bill: IBill) => (
+                    <ListItem key={bill.name}>
                         <Link to={`/${bill.name}`}>
-                            <ListItemText className={classes.listItemText} primary={bill.name} secondary={bill.date}/>
+                            <ListItemText primary={bill.name} secondary={bill.date.toString()}/>
                         </Link>
                     </ListItem>
                 ))}
             </List>
             <Styles.SFab
-                className={classes.fab}
                 onClick={() => setBillDialogOpen(true)}
             >
                 <AddIcon />

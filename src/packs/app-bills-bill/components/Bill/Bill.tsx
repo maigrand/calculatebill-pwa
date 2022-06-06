@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { Key } from 'react'
 import * as Styles from './Bill.styles'
-import { useParams, Routes, Route } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -12,33 +12,63 @@ import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
 import { Add as AddIcon } from '@mui/icons-material'
+import Typography from '@mui/material/Typography'
+
+import { IBill } from '../../../app-bills-billlist/components/Billlist/Billlist'
+
+interface IGuest {
+    name: String,
+    positions: IPosition[],
+}
+
+interface IPosition {
+    name: String,
+    cost: Number,
+}
 
 export default function Bill() {
     const params= useParams()
     const billName= params.id
 
     const bills= React.useMemo(() => {
-        return JSON.parse(localStorage.getItem("bills"))
+        return JSON.parse(localStorage.getItem("bills") as string)
     }, [
-
+        billName
     ])
-    const bill= bills.filter((bill) => bill.name === billName)[0]
 
-    const [guestDialogOpen, setGuestDialogOpen]= React.useState(false)
-    const [guestName, setGuestName]= React.useState('')
-    const [currentGuestName, setCurrentGuestName]= React.useState('')
+    const bill= React.useMemo(() => {
+        return bills.filter((bill: IBill) => bill.name === billName)[0]
+    }, [
+        billName
+    ])
 
-    const [positionsDialogOpen, setPositionsDialogOpen]= React.useState(false)
-    const [positionName, setPositionName]= React.useState('')
-    const [positionCost, setPositionCost]= React.useState('')
+    const [guestDialogOpen, setGuestDialogOpen]= React.useState<boolean>(false)
+    const [guestName, setGuestName]= React.useState<string>('')
+    const [currentGuestName, setCurrentGuestName]= React.useState<String>('')
+
+    const [positionsDialogOpen, setPositionsDialogOpen]= React.useState<boolean>(false)
+    const [positionName, setPositionName]= React.useState<string>('')
+    const [positionCost, setPositionCost]= React.useState<number>(0)
+
+    const [totalCost, setTotalCost]= React.useState<number>(0)
+
+    const handleTotalCost= () => {
+        let total: number = 0
+        for (const guest of bill.guests) {
+            for (const position of guest.positions) {
+                total += parseFloat(position.cost)
+            }
+        }
+        setTotalCost(total)
+    }
+
+    console.log(totalCost)
 
     React.useEffect(() => {
+        handleTotalCost
+    }, [])
 
-    }, [
-        bills
-    ])
-
-    const handleAddGuest= (guestName) => {
+    const handleAddGuest= (guestName: String) => {
         bill.guests.push({
             name: guestName,
             positions: []
@@ -47,8 +77,8 @@ export default function Bill() {
         localStorage.setItem("bills", JSON.stringify(bills))
     }
 
-    const handleAddPosition= (currentGuestName, positionName, positionCost) => {
-        const guest= bill.guests.filter((guest) => guest.name === currentGuestName)[0]
+    const handleAddPosition= (currentGuestName: String, positionName: String, positionCost: Number) => {
+        const guest= bill.guests.filter((guest: IGuest) => guest.name === currentGuestName)[0]
         guest.positions.push({
             name: positionName,
             cost: positionCost,
@@ -56,16 +86,17 @@ export default function Bill() {
         bill.guests[guestName] = guest
         bills[bill] = bill
         localStorage.setItem("bills", JSON.stringify(bills))
+        handleTotalCost()
     }
 
     return (
         <Styles.DivRoot>
             <List>
-                {!!bill.guests && bill.guests.map((guest) => (
-                    <ListItem key={guest.name}>
+                {!!bill.guests && bill.guests.map((guest: IGuest) => (
+                    <ListItem key={guest.name as Key}>
                         <ListItemText
                             primary={guest.name}
-                            secondary={guest.positions.map((position) => `${position.name}:${position.cost} `)}
+                            secondary={guest.positions.map((position: IPosition) => `${position.name}:${position.cost} `)}
                             onClick={() => {
                                 setPositionsDialogOpen(true)
                                 setCurrentGuestName(guest.name)
@@ -74,6 +105,9 @@ export default function Bill() {
                     </ListItem>
                 ))}
             </List>
+            <Typography>
+                TotalCost: {totalCost}
+            </Typography>
             <Fab onClick={() => setGuestDialogOpen(true)}>
                  <AddIcon/>
             </Fab>
@@ -107,7 +141,7 @@ export default function Bill() {
                     <TextField
                         required
                         label="Cost"
-                        onChange={(e) => setPositionCost(e.target.value)}
+                        onChange={(e) => setPositionCost(parseFloat(e.target.value))}
                     />
                 </DialogContent>
                 <DialogActions>
