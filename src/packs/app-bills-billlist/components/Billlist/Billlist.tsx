@@ -1,6 +1,7 @@
 import React from 'react'
 import * as Styles from './Billlist.styles'
 import { Link } from 'react-router-dom'
+import {v4 as uuidv4} from 'uuid'
 
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -11,29 +12,25 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import TextField from '@mui/material/TextField'
-import { Add as AddIcon } from '@mui/icons-material'
+import AddIcon from '@mui/icons-material/Add'
 
-export interface IBill {
-    name: string,
-    date: Date,
-    guests: []
-}
+import {IBill} from '../../../app-bills/components/Bills/Bills.interfaces'
 
 export default function Billlist() {
     const [billName, setBillName]= React.useState('')
     const [billDialogOpen, setBillDialogOpen]= React.useState(false)
 
-    const bills= React.useMemo(() => {
+    const bills: IBill[] = React.useMemo(() => {
         return localStorage.getItem("bills") === null ? [] : JSON.parse(localStorage.getItem("bills") || "")
     }, [
         billName
     ])
 
-    const handleAddBill= (billName: string) => {
+    const handleAddBill = (billName: string) => {
         bills.push({
+            id: uuidv4(),
             name: billName,
             date: new Date(),
-            guests: []
         })
         localStorage.setItem("bills", JSON.stringify(bills))
     }
@@ -45,7 +42,7 @@ export default function Billlist() {
     ])
 
     return (
-        <>
+        <Styles.Root>
             <List>
                 {bills.length === 0 && (
                     <ListItem>
@@ -60,11 +57,11 @@ export default function Billlist() {
                     </ListItem>
                 ))}
             </List>
-            <Styles.SFab
+            <Styles.Fab
                 onClick={() => setBillDialogOpen(true)}
             >
                 <AddIcon />
-            </Styles.SFab>
+            </Styles.Fab>
             <Dialog open={billDialogOpen}>
                 <DialogTitle>Test Dialog</DialogTitle>
                 <DialogContent>
@@ -86,6 +83,6 @@ export default function Billlist() {
                     <Button onClick={() => setBillDialogOpen(false)}>Close</Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </Styles.Root>
     )
 }

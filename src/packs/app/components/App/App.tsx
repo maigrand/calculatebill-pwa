@@ -8,7 +8,7 @@ import Container from '@mui/material/Container'
 import Drawer from '@mui/material/Drawer'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { Menu as MenuIcon } from '@mui/icons-material'
+import MenuIcon from '@mui/icons-material/Menu'
 
 export default function App() {
 
